@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "build": "next build",
-    "dev": "next dev",
+    "dev": "rimraf .next & next dev",
     "postinstall": "prisma generate",
     "lint": "next lint",
     "start": "next start",
@@ -18,10 +18,13 @@
     "@trpc/next": "10.0.0-proxy-beta.11",
     "@trpc/react": "10.0.0-proxy-beta.11",
     "@trpc/server": "10.0.0-proxy-beta.11",
+    "@types/bcryptjs": "^2.4.2",
+    "bcryptjs": "^2.4.3",
     "next": "12.3.1",
     "next-auth": "~4.10.2",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "rimraf": "^3.0.2",
     "superjson": "1.9.1",
     "zod": "^3.18.0"
   },
