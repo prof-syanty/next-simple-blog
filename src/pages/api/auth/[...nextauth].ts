@@ -13,12 +13,17 @@ import CredentialsProvider from "next-auth/providers/credentials";
 export const authOptions: NextAuthOptions = {
   // Include user.id on session
   callbacks: {
-    session({ session, user }) {
-      if (session.user) {
-        session.user.id = user.id;
-      }
+    async session({ session, token }) {
+      session.user.id = token.userId;
       return session;
     },
+    async jwt({ token, user }) {
+      token.userId = user?.id as string;
+      return token;
+    },
+  },
+  session: {
+    strategy: "jwt",
   },
   // Configure one or more authentication providers
   adapter: PrismaAdapter(prisma),
@@ -75,6 +80,9 @@ export const authOptions: NextAuthOptions = {
     }),
     // ...add more providers here
   ],
+  pages: {
+    signIn: "/auth/signin",
+  },
 };
 
 export default NextAuth(authOptions);
