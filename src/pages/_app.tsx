@@ -4,6 +4,7 @@ import { trpc } from "@utils/trpc";
 import type { Session } from "next-auth";
 import { SessionProvider, signIn, signOut, useSession } from "next-auth/react";
 import type { AppProps } from "next/app";
+import Link from "next/link";
 interface AppPropsWithLayout extends AppProps {
   pageProps: {
     session: Session;
@@ -16,11 +17,11 @@ const MyApp = ({
   return (
     <SessionProvider session={session}>
       <div className="flex flex-col w-full">
-        <header className="flex items-center justify-between p-3 shadow-lg bg-slate-50">
+        <header className="flex items-center justify-between p-3 shadow-lg bg-slate-50 sticky top-0">
           <h1>LOGO</h1>
           <AuthShowcase />
         </header>
-        <main className="min-h-screen">
+        <main className="min-h-screen my-4 mx-16">
           <Component {...pageProps} />
         </main>
       </div>
@@ -36,12 +37,17 @@ const AuthShowcase: React.FC = () => {
   return (
     <div className="flex items-center justify-center gap-2">
       {sessionData && (
-        <p className="text-2xl text-blue-500">
-          Logged in as {sessionData?.user?.name}
+        <p>
+          <span className="mr-2">Welcome</span>
+          <Link href={"/profile"}>
+            <a className="text-green-500 hover:underline">
+              {sessionData?.user?.name}
+            </a>
+          </Link>
         </p>
       )}
       <button
-        className="px-4 py-2 border border-black text-xl rounded-md bg-violet-50 hover:bg-violet-100 shadow-lg'"
+        className="px-4 py-1 border border-red-900 text-xl rounded-md bg-red-50 hover:bg-red-300 shadow-lg'"
         onClick={sessionData ? () => signOut() : () => signIn()}
       >
         {sessionData ? "Sign out" : "Sign in"}
