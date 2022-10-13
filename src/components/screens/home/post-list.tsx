@@ -2,7 +2,7 @@ import PostCard from "@components/screens/home/post-card";
 import { trpc } from "@utils/trpc";
 
 function PostList() {
-  const { data, isLoading } = trpc.post.getAllPosts.useQuery();
+  const { data, isLoading, refetch } = trpc.post.getAllPosts.useQuery();
   if (isLoading) {
     return <p>Loading .....</p>;
   }
@@ -12,7 +12,7 @@ function PostList() {
   return (
     <div className="flex flex-col gap-4">
       {data?.map((item, i) => (
-        <PostCard {...item} key={i} />
+        <PostCard {...item} key={i} postDeleted={refetch} />
       ))}
     </div>
   );

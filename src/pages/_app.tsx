@@ -17,8 +17,10 @@ const MyApp = ({
   return (
     <SessionProvider session={session}>
       <div className="flex flex-col w-full">
-        <header className="flex items-center justify-between p-3 shadow-lg bg-slate-50 sticky top-0">
-          <h1>LOGO</h1>
+        <header className="flex items-center justify-between p-3 shadow-lg bg-slate-50 sticky top-0 px-16">
+          <Link href={"/"}>
+            <a className="text-3xl font-bold">LOGO</a>
+          </Link>
           <AuthShowcase />
         </header>
         <main className="min-h-screen my-4 mx-16">

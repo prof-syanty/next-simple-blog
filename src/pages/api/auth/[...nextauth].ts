@@ -11,14 +11,17 @@ import { comparePassword } from "@utils/bcryptjs";
 import CredentialsProvider from "next-auth/providers/credentials";
 
 export const authOptions: NextAuthOptions = {
-  // Include user.id on session
   callbacks: {
-    async session({ session, token }) {
-      session.user.id = token.userId;
+    session: async ({ session, token }) => {
+      if (session?.user) {
+        session.user.id = token.userId;
+      }
       return session;
     },
-    async jwt({ token, user }) {
-      token.userId = user?.id as string;
+    jwt: async ({ user, token }) => {
+      if (user) {
+        token.userId = user.id;
+      }
       return token;
     },
   },
@@ -57,6 +60,7 @@ export const authOptions: NextAuthOptions = {
             id: user.id,
             name: user.name,
             email: user.email,
+            image: "",
           };
         }
         throw new Error("Invalid credentials");
@@ -78,7 +82,6 @@ export const authOptions: NextAuthOptions = {
       clientId: env.DISCORD_CLIENT_ID,
       clientSecret: env.DISCORD_CLIENT_SECRET,
     }),
-    // ...add more providers here
   ],
   pages: {
     signIn: "/auth/signin",

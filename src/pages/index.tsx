@@ -1,7 +1,7 @@
-import PostForm from "@components/screens/home/post-form";
 import PostList from "@components/screens/home/post-list";
 import type { NextPage } from "next";
 import Head from "next/head";
+import Link from "next/link";
 
 const Home: NextPage = () => {
   return (
@@ -12,7 +12,13 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <div className="max-w-xl mx-auto">
-        <PostForm />
+        <div className="my-6">
+          <Link href={`/post/create`}>
+            <a className="text-white bg-green-500 p-2 rounded-md">
+              Create Post
+            </a>
+          </Link>
+        </div>
         <PostList />
       </div>
     </>
