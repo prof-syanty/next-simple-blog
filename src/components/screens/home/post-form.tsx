@@ -59,7 +59,6 @@ function PostForm({ editMode = false }: { editMode?: boolean }) {
 
   return (
     <>
-      {JSON.stringify(defaultValues)}
       <form onSubmit={handleSubmit(onPostSubmit)}>
         {isSuccess && data && <Alert type="success">{data.message}</Alert>}
         {error && <Alert type="error">{error.message}</Alert>}

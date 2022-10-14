@@ -39,18 +39,25 @@ const AuthShowcase: React.FC = () => {
   return (
     <div className="flex items-center justify-center gap-2">
       {sessionData && (
-        <p>
-          <span className="mr-2">Welcome</span>
+        <div className="flex items-center space-x-4">
+          <span>Welcome</span>
           <Link href={"/profile"}>
             <a className="text-green-500 hover:underline">
               {sessionData?.user?.name}
             </a>
           </Link>
-        </p>
+          <Link href="/admin/dashboard">
+            <a className="px-4 py-1 border border-black text-xl rounded-md bg-yellow-50 hover:bg-yellow-300 shadow-lg'">
+              Dashboard
+            </a>
+          </Link>
+        </div>
       )}
       <button
         className="px-4 py-1 border border-red-900 text-xl rounded-md bg-red-50 hover:bg-red-300 shadow-lg'"
-        onClick={sessionData ? () => signOut() : () => signIn()}
+        onClick={
+          sessionData ? () => signOut({ callbackUrl: "/" }) : () => signIn()
+        }
       >
         {sessionData ? "Sign out" : "Sign in"}
       </button>

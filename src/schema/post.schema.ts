@@ -13,3 +13,11 @@ export const singlePostSchema = z.object({
 });
 
 export type singlePostInput = z.TypeOf<typeof singlePostSchema>;
+
+export const offsetPostsPayloadSchema = z.object({
+  limit: z.number().min(1).max(100).nullish(),
+  page: z.number().nullish(),
+  searchTerm: z.string().nullish(),
+});
+
+export type offsetPostsPayload = z.TypeOf<typeof offsetPostsPayloadSchema>;

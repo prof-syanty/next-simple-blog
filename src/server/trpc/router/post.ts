@@ -1,4 +1,8 @@
-import { createUpdatePostSchema, singlePostSchema } from "@schema/post.schema";
+import {
+  createUpdatePostSchema,
+  offsetPostsPayloadSchema,
+  singlePostSchema,
+} from "@schema/post.schema";
 import { authedProcedure, t } from "@server/trpc/trpc";
 
 export const postRouter = t.router({
@@ -68,5 +72,49 @@ export const postRouter = t.router({
 
         return deletedPost;
       } catch (error) {}
+    }),
+
+  offsetPosts: t.procedure
+    .input(offsetPostsPayloadSchema)
+    .query(async ({ input, ctx }) => {
+      const limit = input.limit ?? 12;
+      const page = input.page ?? 1;
+
+      const searchTerm = input.searchTerm;
+      const searchTermFilter = searchTerm
+        ? {
+            OR: [
+              { title: { contains: searchTerm } },
+              { body: { contains: searchTerm } },
+            ],
+          }
+        : {};
+
+      const postsCount = await ctx.prisma.post.count({
+        where: { ...searchTermFilter },
+      });
+      const posts = await ctx.prisma.post.findMany({
+        take: limit,
+        skip: limit * (page - 1),
+        where: { ...searchTermFilter },
+        orderBy: {
+          createdAt: "asc",
+        },
+        include: {
+          author: true,
+        },
+      });
+
+      return {
+        results: posts,
+        meta: {
+          totalItems: postsCount,
+          totalPages: Math.ceil(postsCount / limit),
+          currentPage: page,
+          perPage: limit,
+          prevPage: (page - 1) * limit + 1,
+          nextPage: (page - 1) * limit + postsCount,
+        },
+      };
     }),
 });
