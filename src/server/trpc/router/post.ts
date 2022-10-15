@@ -1,4 +1,5 @@
 import {
+  changePublishStatusSchema,
   createUpdatePostSchema,
   offsetPostsPayloadSchema,
   singlePostSchema,
@@ -8,6 +9,9 @@ import { authedProcedure, t } from "@server/trpc/trpc";
 export const postRouter = t.router({
   getAllPosts: t.procedure.query(({ ctx }) => {
     return ctx.prisma.post.findMany({
+      where: {
+        isPublished: true,
+      },
       orderBy: {
         createdAt: "desc",
       },
@@ -26,6 +30,7 @@ export const postRouter = t.router({
           },
           update: {
             ...input,
+            isPublished: false, //for admin to publish
           },
           create: {
             ...input,
@@ -116,5 +121,20 @@ export const postRouter = t.router({
           nextPage: page < totalPages ? page + 1 : null,
         },
       };
+    }),
+
+  changePublishStatus: authedProcedure
+    .input(changePublishStatusSchema)
+    .mutation(({ input, ctx }) => {
+      const updatedPost = ctx.prisma.post.update({
+        where: {
+          id: input.id,
+        },
+        data: {
+          isPublished: !input.isPublished, //toggle publish status
+        },
+      });
+
+      return updatedPost;
     }),
 });

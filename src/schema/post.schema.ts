@@ -21,3 +21,12 @@ export const offsetPostsPayloadSchema = z.object({
 });
 
 export type offsetPostsPayload = z.TypeOf<typeof offsetPostsPayloadSchema>;
+
+export const changePublishStatusSchema = z.object({
+  id: z.string().cuid(),
+  isPublished: z.boolean(),
+});
+
+export type changePublishStatusInput = z.TypeOf<
+  typeof changePublishStatusSchema
+>;

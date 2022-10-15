@@ -1,3 +1,5 @@
+import PostDeleteButton from "@components/ui/button/post-delete-button";
+import PostPublishButton from "@components/ui/button/post-publish-button";
 import withAuth from "@hoc/with-auth";
 import { trpc } from "@utils/trpc";
 import moment from "moment";
@@ -5,8 +7,8 @@ import { useState } from "react";
 
 function AllPosts() {
   const [page, setPage] = useState(1);
-  const [limit] = useState(2);
-  const { data, isLoading } = trpc.post.offsetPosts.useQuery({
+  const [limit] = useState(12);
+  const { data, isLoading, refetch } = trpc.post.offsetPosts.useQuery({
     limit,
     page,
   });
@@ -15,6 +17,16 @@ function AllPosts() {
   const { totalPages, currentPage, prevPage, nextPage } = {
     ...meta,
   };
+
+  const { mutate } = trpc.post.deletePost.useMutation({
+    onSuccess() {
+      refetch();
+    },
+  });
+
+  function proceedDelete(id: string) {
+    mutate({ id });
+  }
 
   return (
     <div className="bg-white shadow-md rounded my-6">
@@ -52,8 +64,14 @@ function AllPosts() {
                   </td>
                   <td className="py-3px-6 text-center ">{post.author.name}</td>
                   <td className="py-3 px-6 text-center">
-                    <span className="bg-purple-200 text-purple-600 py-1 px-3 rounded-full text-xs">
-                      Published
+                    <span
+                      className={`py-1 px-3 rounded-full text-xs ${
+                        post.isPublished
+                          ? "bg-green-200 text-green-600"
+                          : "bg-red-200 text-red-600"
+                      }`}
+                    >
+                      {post.isPublished ? "Published" : "Pending"}
                     </span>
                   </td>
                   <td className="py-3 px-6 text-center">
@@ -64,12 +82,12 @@ function AllPosts() {
                   </td>
                   <td>
                     <div className="flex items-center space-x-3">
-                      <button className="p-2 rounded-md bg-gray-500 text-white">
-                        Publish
-                      </button>
-                      <button className="p-2 rounded-md bg-red-500 text-white">
-                        Delete
-                      </button>
+                      <PostPublishButton
+                        refetch={refetch}
+                        postId={post.id}
+                        isPublished={post.isPublished}
+                      />
+                      <PostDeleteButton refetch={refetch} postId={post.id} />
                     </div>
                   </td>
                 </tr>
