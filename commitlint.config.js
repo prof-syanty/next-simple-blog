@@ -15,6 +15,7 @@ const Configuration = {
   // refactor: A code change that neither fixes a bug nor adds a feature
   // style: Changes that do not affect the meaning of the code (white-space, formatting, missing semi-colons, etc)
   // test: Adding missing tests or correcting existing tests
+  //security: security like middlewares
   rules: {
     "body-leading-blank": [1, "always"],
     "body-max-line-length": [2, "always", 100],
@@ -34,7 +35,17 @@ const Configuration = {
     "type-enum": [
       2,
       "always",
-      ["init", "build", "feat", "fix", "perf", "refactor", "style", "test"],
+      [
+        "init",
+        "build",
+        "feat",
+        "fix",
+        "perf",
+        "refactor",
+        "style",
+        "test",
+        "security",
+      ],
     ],
   },
 };

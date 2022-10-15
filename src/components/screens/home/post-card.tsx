@@ -1,4 +1,5 @@
 import PostDeleteButton from "@components/ui/button/post-delete-button";
+import PostLikeButton from "@components/ui/button/post-like-button";
 import { Post, User } from "@prisma/client";
 import moment from "moment";
 import { useSession } from "next-auth/react";
@@ -8,16 +9,19 @@ function PostCard({
   id,
   title,
   body,
-  createdAt,
   author,
   authorId,
+  likedBy,
+  createdAt,
   updatedAt,
-  postDeleted,
+  refetch,
 }: Post & {
   author: User;
-  postDeleted: () => void;
+  likedBy: User[];
+  refetch: () => void;
 }) {
   const { data: session } = useSession();
+  console.log(likedBy);
 
   return (
     <>
@@ -31,7 +35,7 @@ function PostCard({
               <Link href={`/post/${id}/edit`}>
                 <a className="bg-blue-500 p-1 rounded-md text-white">Edit</a>
               </Link>
-              <PostDeleteButton refetch={postDeleted} postId={id} />
+              <PostDeleteButton refetch={refetch} postId={id} />
             </div>
           )}
         </div>
@@ -48,6 +52,14 @@ function PostCard({
           <span className="text-black/40">
             Updated {moment(updatedAt).fromNow()}
           </span>
+        </div>
+        <div className="flex item-center">
+          <PostLikeButton
+            isLiked={!!likedBy.some(({ id }: User) => id === session?.user?.id)}
+            likesCount={likedBy.length}
+            postId={id}
+            refetch={refetch}
+          />
         </div>
       </article>
     </>

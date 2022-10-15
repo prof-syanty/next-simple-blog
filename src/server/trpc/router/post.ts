@@ -3,6 +3,7 @@ import {
   changePublishStatusSchema,
   createUpdatePostSchema,
   offsetPostsPayloadSchema,
+  postLikeUnlikeSchema,
   singlePostSchema,
 } from "@schema/post.schema";
 import { adminProcedure, authedProcedure, t } from "@server/trpc/trpc";
@@ -19,6 +20,7 @@ export const postRouter = t.router({
       },
       include: {
         author: true,
+        likedBy: true,
       },
     });
   }),
@@ -180,4 +182,31 @@ export const postRouter = t.router({
       return postsCount;
     } catch (error) {}
   }),
+
+  likeUnlikePost: authedProcedure
+    .input(postLikeUnlikeSchema)
+    .mutation(async ({ input, ctx }) => {
+      try {
+        const updatedPost = await ctx.prisma.post.update({
+          where: {
+            id: input.id,
+          },
+          data: {
+            likedBy: input.like
+              ? {
+                  connect: {
+                    id: ctx.session.user.id,
+                  },
+                }
+              : {
+                  disconnect: {
+                    id: ctx.session.user.id,
+                  },
+                },
+          },
+        });
+
+        return updatedPost;
+      } catch (error) {}
+    }),
 });

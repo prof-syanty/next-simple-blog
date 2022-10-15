@@ -60,7 +60,8 @@ model User {
     role          Role      @default(AUTHOR)
     accounts      Account[]
     sessions      Session[]
-    Post          Post[]
+    posts         Post[]    @relation("authorPosts")
+    likedPosts    Post[]    @relation("likedPosts")
 }
 
 model VerificationToken {
@@ -72,12 +73,14 @@ model VerificationToken {
 }
 
 model Post {
-    id          String  @id @default(cuid())
-    title       String
-    body        String
-    image       String?
-    authorId    String
-    author      User    @relation(fields: [authorId], references: [id], onDelete: Restrict)
+    id       String  @id @default(cuid())
+    title    String
+    body     String
+    image    String?
+    authorId String
+    author   User    @relation("authorPosts", fields: [authorId], references: [id], onDelete: Restrict)
+    likedBy  User[]  @relation("likedPosts")
+
     isPublished Boolean @default(false)
 
     createdAt DateTime @default(now())

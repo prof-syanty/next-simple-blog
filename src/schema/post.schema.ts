@@ -30,3 +30,9 @@ export const changePublishStatusSchema = z.object({
 export type changePublishStatusInput = z.TypeOf<
   typeof changePublishStatusSchema
 >;
+export const postLikeUnlikeSchema = z.object({
+  id: z.string().cuid(),
+  like: z.boolean(),
+});
+
+export type postLikeUnlikeInput = z.TypeOf<typeof postLikeUnlikeSchema>;

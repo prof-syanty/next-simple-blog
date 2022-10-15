@@ -7,7 +7,9 @@ function PostList() {
   const { data: session } = useSession();
   const { data, isLoading, refetch } = trpc.post.getAllPosts.useQuery();
   const { data: authorPostsCount } =
-    trpc.post.getAuthorUnpublishedPostsCount.useQuery();
+    trpc.post.getAuthorUnpublishedPostsCount.useQuery(undefined, {
+      enabled: !!session?.user,
+    });
   if (isLoading) {
     return <p>Loading .....</p>;
   }
@@ -22,7 +24,7 @@ function PostList() {
 
       <div className="flex flex-col gap-4">
         {data?.map((item, i) => (
-          <PostCard {...item} key={i} postDeleted={refetch} />
+          <PostCard {...item} key={i} refetch={refetch} />
         ))}
       </div>
     </>
