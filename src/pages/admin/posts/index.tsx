@@ -76,19 +76,22 @@ function AllPosts() {
               ))}
 
               <tr>
-                {JSON.stringify(meta)}
                 <td colSpan={8} className="py-5 text-center">
                   <nav aria-label="Page navigation example">
                     <ul className="inline-flex -space-x-px">
                       <li>
                         <button
-                          disabled={currentPage === prevPage}
+                          disabled={!prevPage}
                           onClick={() => {
                             if (prevPage) {
                               setPage(prevPage);
                             }
                           }}
-                          className="py-2 px-3 ml-0 leading-tight text-gray-500 bg-white rounded-l-lg border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                          className={`py-2 px-3 ml-0 leading-tight text-gray-500 rounded-l-lg border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white ${
+                            !prevPage
+                              ? "bg-gray-100 cursor-not-allowed"
+                              : "bg-white"
+                          }`}
                         >
                           Previous
                         </button>
@@ -111,13 +114,17 @@ function AllPosts() {
 
                       <li>
                         <button
-                          disabled={currentPage === nextPage}
+                          disabled={!nextPage}
                           onClick={() => {
                             if (nextPage) {
                               setPage(nextPage);
                             }
                           }}
-                          className="py-2 px-3 leading-tight text-gray-500 bg-white rounded-r-lg border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                          className={`py-2 px-3 ml-0 leading-tight text-gray-500 rounded-r-lg border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white ${
+                            !nextPage
+                              ? "bg-gray-100 cursor-not-allowed"
+                              : "bg-white"
+                          }`}
                         >
                           Next
                         </button>

@@ -104,16 +104,16 @@ export const postRouter = t.router({
           author: true,
         },
       });
-
+      const totalPages = Math.ceil(postsCount / limit);
       return {
         results: posts,
         meta: {
           totalItems: postsCount,
-          totalPages: Math.ceil(postsCount / limit),
+          totalPages,
           currentPage: page,
           perPage: limit,
-          prevPage: (page - 1) * limit + 1,
-          nextPage: (page - 1) * limit + postsCount,
+          prevPage: page > 1 ? page - 1 : null,
+          nextPage: page < totalPages ? page + 1 : null,
         },
       };
     }),
