@@ -1,4 +1,5 @@
 // src/pages/_app.tsx
+import { Role } from "@prisma/client";
 import "@styles/globals.css";
 import { trpc } from "@utils/trpc";
 import type { Session } from "next-auth";
@@ -35,7 +36,6 @@ export default trpc.withTRPC(MyApp);
 
 const AuthShowcase: React.FC = () => {
   const { data: sessionData } = useSession();
-
   return (
     <div className="flex items-center justify-center gap-2">
       {sessionData && (
@@ -46,11 +46,13 @@ const AuthShowcase: React.FC = () => {
               {sessionData?.user?.name}
             </a>
           </Link>
-          <Link href="/admin/dashboard">
-            <a className="px-4 py-1 border border-black text-xl rounded-md bg-yellow-50 hover:bg-yellow-300 shadow-lg'">
-              Dashboard
-            </a>
-          </Link>
+          {sessionData.user?.role === Role.ADMIN && (
+            <Link href="/admin/dashboard">
+              <a className="px-4 py-1 border border-black text-xl rounded-md bg-yellow-50 hover:bg-yellow-300 shadow-lg'">
+                Dashboard
+              </a>
+            </Link>
+          )}
         </div>
       )}
       <button

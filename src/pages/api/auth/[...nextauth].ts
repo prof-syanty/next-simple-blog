@@ -15,12 +15,14 @@ export const authOptions: NextAuthOptions = {
     session: async ({ session, token }) => {
       if (session?.user) {
         session.user.id = token.userId;
+        session.user.role = token.userRole;
       }
       return session;
     },
     jwt: async ({ user, token }) => {
       if (user) {
         token.userId = user.id;
+        token.userRole = user.role;
       }
       return token;
     },
@@ -61,6 +63,7 @@ export const authOptions: NextAuthOptions = {
             name: user.name,
             email: user.email,
             image: "",
+            role: user.role,
           };
         }
         throw new Error("Invalid credentials");

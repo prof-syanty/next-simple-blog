@@ -4,7 +4,7 @@ import {
   offsetPostsPayloadSchema,
   singlePostSchema,
 } from "@schema/post.schema";
-import { authedProcedure, t } from "@server/trpc/trpc";
+import { adminProcedure, authedProcedure, t } from "@server/trpc/trpc";
 
 export const postRouter = t.router({
   getAllPosts: t.procedure.query(({ ctx }) => {
@@ -123,18 +123,47 @@ export const postRouter = t.router({
       };
     }),
 
-  changePublishStatus: authedProcedure
+  changePublishStatus: adminProcedure
     .input(changePublishStatusSchema)
-    .mutation(({ input, ctx }) => {
-      const updatedPost = ctx.prisma.post.update({
+    .mutation(async ({ input, ctx }) => {
+      try {
+        const updatedPost = await ctx.prisma.post.update({
+          where: {
+            id: input.id,
+          },
+          data: {
+            isPublished: !input.isPublished, //toggle publish status
+          },
+        });
+
+        return updatedPost;
+      } catch (error) {}
+    }),
+
+  getAuthorPosts: authedProcedure.query(async ({ ctx }) => {
+    try {
+      const posts = await ctx.prisma.post.findMany({
         where: {
-          id: input.id,
+          authorId: ctx.session.user.id,
         },
-        data: {
-          isPublished: !input.isPublished, //toggle publish status
+        include: {
+          author: true,
         },
       });
 
-      return updatedPost;
-    }),
+      return posts;
+    } catch (error) {}
+  }),
+  getAuthorUnpublishedPostsCount: authedProcedure.query(async ({ ctx }) => {
+    try {
+      const postsCount = await ctx.prisma.post.count({
+        where: {
+          authorId: ctx.session.user.id,
+          isPublished: false,
+        },
+      });
+
+      return postsCount;
+    } catch (error) {}
+  }),
 });

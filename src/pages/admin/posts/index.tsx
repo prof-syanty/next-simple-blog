@@ -1,6 +1,6 @@
 import PostDeleteButton from "@components/ui/button/post-delete-button";
 import PostPublishButton from "@components/ui/button/post-publish-button";
-import withAuth from "@hoc/with-auth";
+import withAdmin from "@hoc/with-admin";
 import { trpc } from "@utils/trpc";
 import moment from "moment";
 import { useState } from "react";
@@ -159,4 +159,4 @@ function AllPosts() {
   );
 }
 
-export default withAuth(AllPosts);
+export default withAdmin(AllPosts);

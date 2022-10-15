@@ -68,7 +68,7 @@ const SignIn = ({
               >
                 Sign in with Credentials
               </button>
-              <Link href="/auth/register">
+              <Link href="/auth/signup">
                 <a className="block text-center p-2 text-blue-600 hover:underline">
                   Not a User?
                 </a>

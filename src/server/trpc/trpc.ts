@@ -1,6 +1,7 @@
+import { Role } from "@prisma/client";
 import { initTRPC, TRPCError } from "@trpc/server";
-import type { Context } from "./context";
 import superjson from "superjson";
+import type { Context } from "./context";
 
 export const t = initTRPC.context<Context>().create({
   transformer: superjson,
@@ -12,6 +13,23 @@ export const t = initTRPC.context<Context>().create({
 export const authedProcedure = t.procedure.use(({ ctx, next }) => {
   if (!ctx.session || !ctx.session.user) {
     throw new TRPCError({ code: "UNAUTHORIZED" });
+  }
+  return next({
+    ctx: {
+      ...ctx,
+      // infers that `session` is non-nullable to downstream resolvers
+      session: { ...ctx.session, user: ctx.session.user },
+    },
+  });
+});
+
+export const adminProcedure = t.procedure.use(({ ctx, next }) => {
+  if (
+    !ctx.session ||
+    !ctx.session.user ||
+    ctx.session.user.role !== Role.ADMIN
+  ) {
+    throw new TRPCError({ code: "FORBIDDEN" });
   }
   return next({
     ctx: {

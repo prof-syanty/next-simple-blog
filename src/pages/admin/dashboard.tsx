@@ -1,4 +1,4 @@
-import withAuth from "@hoc/with-auth";
+import withAdmin from "@hoc/with-admin";
 import Link from "next/link";
 
 function Dashboard() {
@@ -9,4 +9,4 @@ function Dashboard() {
   );
 }
 
-export default withAuth(Dashboard);
+export default withAdmin(Dashboard);
