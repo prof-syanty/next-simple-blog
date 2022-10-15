@@ -1,3 +1,4 @@
+import { Role } from "@prisma/client";
 import {
   changePublishStatusSchema,
   createUpdatePostSchema,
@@ -5,6 +6,7 @@ import {
   singlePostSchema,
 } from "@schema/post.schema";
 import { adminProcedure, authedProcedure, t } from "@server/trpc/trpc";
+import { TRPCError } from "@trpc/server";
 
 export const postRouter = t.router({
   getAllPosts: t.procedure.query(({ ctx }) => {
@@ -24,13 +26,27 @@ export const postRouter = t.router({
     .input(createUpdatePostSchema)
     .mutation(async ({ ctx, input }) => {
       try {
+        if (input.id) {
+          const authorPostsCount = await ctx.prisma.post.count({
+            where: {
+              id: input.id,
+              authorId: ctx.session.user.id,
+              isPublished: true,
+            },
+          });
+
+          if (!authorPostsCount) {
+            throw new TRPCError({ code: "NOT_FOUND" });
+          }
+        }
+
         await ctx.prisma.post.upsert({
           where: {
             id: input.id || "",
           },
           update: {
             ...input,
-            isPublished: false, //for admin to publish
+            isPublished: ctx.session.user.role === Role.ADMIN ? true : false, //for admin to publish
           },
           create: {
             ...input,
@@ -44,9 +60,7 @@ export const postRouter = t.router({
         return {
           message: "Post upserted successfully",
         };
-      } catch (errors) {
-        console.log(errors);
-      }
+      } catch (errors) {}
 
       return;
     }),
