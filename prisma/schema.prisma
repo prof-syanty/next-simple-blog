@@ -62,6 +62,7 @@ model User {
     sessions      Session[]
     posts         Post[]    @relation("authorPosts")
     likedPosts    Post[]    @relation("likedPosts")
+    comments      Comment[]
 }
 
 model VerificationToken {
@@ -73,13 +74,14 @@ model VerificationToken {
 }
 
 model Post {
-    id       String  @id @default(cuid())
+    id       String    @id @default(cuid())
     title    String
     body     String
     image    String?
     authorId String
-    author   User    @relation("authorPosts", fields: [authorId], references: [id], onDelete: Restrict)
-    likedBy  User[]  @relation("likedPosts")
+    author   User      @relation("authorPosts", fields: [authorId], references: [id], onDelete: Restrict)
+    likedBy  User[]    @relation("likedPosts")
+    comments Comment[]
 
     isPublished Boolean @default(false)
 
@@ -87,4 +89,22 @@ model Post {
     updatedAt DateTime @updatedAt
 
     @@index([isPublished])
+}
+
+model Comment {
+    id   String @id @default(cuid())
+    body String
+
+    commentedBy User?   @relation(fields: [userId], references: [id])
+    userId      String?
+
+    commentedPost Post?   @relation(fields: [postId], references: [id])
+    postId        String?
+
+    children Comment[] @relation("comment_children")
+    parent   Comment?  @relation("comment_children", fields: [parentId], references: [id])
+    parentId String?
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
 }

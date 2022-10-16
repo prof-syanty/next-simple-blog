@@ -1,4 +1,4 @@
-import PostForm from "@components/screens/home/post-form";
+import PostForm from "@components/screens/post/post-form";
 
 function PostEdit() {
   return <PostForm editMode />;

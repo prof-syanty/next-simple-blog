@@ -1,3 +1,4 @@
+import PostCommentButton from "@components/ui/button/post-comment-button";
 import PostDeleteButton from "@components/ui/button/post-delete-button";
 import PostLikeButton from "@components/ui/button/post-like-button";
 import { Post, User } from "@prisma/client";
@@ -21,8 +22,6 @@ function PostCard({
   refetch: () => void;
 }) {
   const { data: session } = useSession();
-  console.log(likedBy);
-
   return (
     <>
       <article className="p-4 bg-white text-black/70 rounded-md border hover:shadow-lg max-w-[600px] flex flex-col space-y-4">
@@ -53,13 +52,14 @@ function PostCard({
             Updated {moment(updatedAt).fromNow()}
           </span>
         </div>
-        <div className="flex item-center">
+        <div className="flex item-center gap-4">
           <PostLikeButton
             isLiked={!!likedBy.some(({ id }: User) => id === session?.user?.id)}
             likesCount={likedBy.length}
             postId={id}
             refetch={refetch}
           />
+          <PostCommentButton commentsCount={likedBy.length} postId={id} />
         </div>
       </article>
     </>
