@@ -1,7 +1,8 @@
 import PostCommentButton from "@components/ui/button/post-comment-button";
 import PostDeleteButton from "@components/ui/button/post-delete-button";
 import PostLikeButton from "@components/ui/button/post-like-button";
-import { Post, User } from "@prisma/client";
+import { User } from "@prisma/client";
+import { singlePostWithIncludes } from "@utils/trpc";
 import moment from "moment";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
@@ -13,12 +14,11 @@ function PostCard({
   author,
   authorId,
   likedBy,
+  comments,
   createdAt,
   updatedAt,
   refetch,
-}: Post & {
-  author: User;
-  likedBy: User[];
+}: singlePostWithIncludes & {
   refetch: () => void;
 }) {
   const { data: session } = useSession();
@@ -59,7 +59,7 @@ function PostCard({
             postId={id}
             refetch={refetch}
           />
-          <PostCommentButton commentsCount={likedBy.length} postId={id} />
+          <PostCommentButton commentsCount={comments.length} postId={id} />
         </div>
       </article>
     </>

@@ -10,8 +10,8 @@ import { adminProcedure, authedProcedure, t } from "@server/trpc/trpc";
 import { TRPCError } from "@trpc/server";
 
 export const postRouter = t.router({
-  getAllPosts: t.procedure.query(({ ctx }) => {
-    return ctx.prisma.post.findMany({
+  getAllPosts: t.procedure.query(async ({ ctx }) => {
+    return await ctx.prisma.post.findMany({
       where: {
         isPublished: true,
       },
@@ -21,6 +21,7 @@ export const postRouter = t.router({
       include: {
         author: true,
         likedBy: true,
+        comments: true,
       },
     });
   }),

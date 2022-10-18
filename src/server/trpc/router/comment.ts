@@ -16,9 +16,6 @@ export const commentRouter = t.router({
           },
           include: {
             commentedBy: true,
-            commentedPost: true,
-            parent: true,
-            children: true,
           },
         });
 

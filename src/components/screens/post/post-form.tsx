@@ -37,7 +37,7 @@ function PostForm({ editMode = false }: { editMode?: boolean }) {
     handleSubmit,
     register,
     reset,
-    formState: { defaultValues, errors },
+    formState: { errors },
   } = useForm<createUpdatePostInput>({
     resolver: zodResolver(createUpdatePostSchema),
     defaultValues: { id: "", title: "", body: "" },

@@ -16,12 +16,14 @@ function PostCommentForm({
   const { mutate } = trpc.comment.addPostComment.useMutation({
     onSuccess() {
       refetch();
+      reset();
     },
   });
 
   const {
     handleSubmit,
     register,
+    reset,
     formState: { errors },
   } = useForm<postCommentInput>({
     resolver: zodResolver(postCommentSchema),

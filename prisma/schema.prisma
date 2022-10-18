@@ -95,14 +95,14 @@ model Comment {
     id   String @id @default(cuid())
     body String
 
-    commentedBy User?   @relation(fields: [userId], references: [id])
+    commentedBy User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
     userId      String?
 
     commentedPost Post?   @relation(fields: [postId], references: [id])
     postId        String?
 
     children Comment[] @relation("comment_children")
-    parent   Comment?  @relation("comment_children", fields: [parentId], references: [id])
+    parent   Comment?  @relation("comment_children", fields: [parentId], references: [id], onDelete: Cascade)
     parentId String?
 
     createdAt DateTime @default(now())

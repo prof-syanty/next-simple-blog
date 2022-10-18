@@ -2,6 +2,7 @@
 import type { AppRouter } from "@server/trpc/router";
 import { httpBatchLink, loggerLink } from "@trpc/client";
 import { createTRPCNext } from "@trpc/next";
+import type { GetInferenceHelpers } from "@trpc/server";
 import superjson from "superjson";
 
 const getBaseUrl = () => {
@@ -28,3 +29,16 @@ export const trpc = createTRPCNext<AppRouter>({
   },
   ssr: true,
 });
+
+export type AppRouterTypes = GetInferenceHelpers<AppRouter>;
+
+type getAllCommentsWithNestedFields =
+  AppRouterTypes["comment"]["getAllCommentsByPostId"];
+export type CommentsWithNestedFields = getAllCommentsWithNestedFields["output"];
+
+type getSinglePost = AppRouterTypes["post"]["getSinglePost"];
+export type singlePost = getSinglePost["output"];
+
+type getAllPosts = AppRouterTypes["post"]["getAllPosts"];
+
+export type singlePostWithIncludes = getAllPosts["output"][0];
