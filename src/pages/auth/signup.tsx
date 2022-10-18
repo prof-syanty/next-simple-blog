@@ -167,7 +167,7 @@ const SignUp = () => {
                 >
                   SignUp
                 </button>
-                <Link href="/auth/login">
+                <Link href="/auth/signin">
                   <a className="block text-center p-2 text-blue-500 hover:underline">
                     Already have an account?
                   </a>
